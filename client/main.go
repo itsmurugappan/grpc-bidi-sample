@@ -9,6 +9,7 @@ import (
 	pp "github.com/itsmurugappan/grpc-bidi-sample/pp"
 
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 func main() {
@@ -35,12 +36,12 @@ func play(c pp.PingPongClient) {
 	}
 
 	for {
-		stream.Send(&pp.PP{
-			Data: "ping",
-		})
+		r := &pp.PP{Data: "ping"}
+		pReq, _ := anypb.New(r)
+		stream.Send(pReq)
 
 		// Get response and possible error message from the stream
-		res, err := stream.Recv()
+		resp, err := stream.Recv()
 
 		// Break for loop if there are no more response messages
 		if err == io.EOF {
@@ -51,7 +52,8 @@ func play(c pp.PingPongClient) {
 		if err != nil {
 			log.Fatalf("Error when receiving response: %v", err)
 		}
-
+		res := &pp.PP{}
+		resp.UnmarshalTo(res)
 		// Log the response
 		fmt.Println(res.Data)
 	}

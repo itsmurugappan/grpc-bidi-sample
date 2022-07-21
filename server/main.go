@@ -1,14 +1,16 @@
 package main
 
 import (
-	pp "github.com/itsmurugappan/grpc-bidi-sample/pp"
 	"io"
 	"net"
 	"time"
 
+	pp "github.com/itsmurugappan/grpc-bidi-sample/pp"
+
 	"log"
 
 	"google.golang.org/grpc"
+	"google.golang.org/protobuf/types/known/anypb"
 )
 
 type server struct {
@@ -33,7 +35,7 @@ func main() {
 
 func (*server) PingPong(stream pp.PingPong_PingPongServer) error {
 	log.Println("CreateUser Function")
-	
+
 	for {
 		time.Sleep(30 * time.Second)
 		// Receive the request and possible error from the stream object
@@ -48,12 +50,13 @@ func (*server) PingPong(stream pp.PingPong_PingPongServer) error {
 		if err != nil {
 			log.Fatalf("Error when reading client request stream: %v", err)
 		}
-
-		log.Println(req.Data)
+		resp := &pp.PP{}
+		req.UnmarshalTo(resp)
+		log.Println(resp.Data)
 
 		// Build and send response to the client
-		stream.Send(&pp.PP{
-			Data: "pong",
-		})
+		r := &pp.PP{Data: "pong"}
+		pReq, _ := anypb.New(r)
+		stream.Send(pReq)
 	}
 }
