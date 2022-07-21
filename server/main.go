@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
+	pp "github.com/itsmurugappan/grpc-bidi-sample/pp"
 	"io"
 	"net"
 	"time"
-	pp "github.com/itsmurugappan/grpc-bidi-sample/pp"
 
 	"log"
 
@@ -13,10 +12,11 @@ import (
 )
 
 type server struct {
+	pp.UnimplementedPingPongServer
 }
 
 func main() {
-	log.Info("Starting the server...")
+	log.Println("Starting the server...")
 
 	lis, err := net.Listen("tcp", ":3000")
 	if err != nil {
@@ -24,17 +24,16 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pp.RegisterUsersServer(s, &server{})
+	pp.RegisterPingPongServer(s, &server{})
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
 }
 
-// CreateUser function
 func (*server) PingPong(stream pp.PingPong_PingPongServer) error {
-	log.Info("CreateUser Function")
-
+	log.Println("CreateUser Function")
+	
 	for {
 		time.Sleep(30 * time.Second)
 		// Receive the request and possible error from the stream object
@@ -54,7 +53,7 @@ func (*server) PingPong(stream pp.PingPong_PingPongServer) error {
 
 		// Build and send response to the client
 		stream.Send(&pp.PP{
-			Data:  "pong",
+			Data: "pong",
 		})
 	}
 }

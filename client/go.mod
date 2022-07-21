@@ -1,4 +1,4 @@
-module github.com/itsmurugappan/grpc-bidi-sample/server
+module github.com/itsmurugappan/grpc-bidi-sample/client
 
 go 1.18
 
