@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	anypb "google.golang.org/protobuf/types/known/anypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -44,8 +45,8 @@ func (c *pingPongClient) PingPong(ctx context.Context, opts ...grpc.CallOption) 
 }
 
 type PingPong_PingPongClient interface {
-	Send(*PP) error
-	Recv() (*PP, error)
+	Send(*anypb.Any) error
+	Recv() (*anypb.Any, error)
 	grpc.ClientStream
 }
 
@@ -53,12 +54,12 @@ type pingPongPingPongClient struct {
 	grpc.ClientStream
 }
 
-func (x *pingPongPingPongClient) Send(m *PP) error {
+func (x *pingPongPingPongClient) Send(m *anypb.Any) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *pingPongPingPongClient) Recv() (*PP, error) {
-	m := new(PP)
+func (x *pingPongPingPongClient) Recv() (*anypb.Any, error) {
+	m := new(anypb.Any)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -99,8 +100,8 @@ func _PingPong_PingPong_Handler(srv interface{}, stream grpc.ServerStream) error
 }
 
 type PingPong_PingPongServer interface {
-	Send(*PP) error
-	Recv() (*PP, error)
+	Send(*anypb.Any) error
+	Recv() (*anypb.Any, error)
 	grpc.ServerStream
 }
 
@@ -108,12 +109,12 @@ type pingPongPingPongServer struct {
 	grpc.ServerStream
 }
 
-func (x *pingPongPingPongServer) Send(m *PP) error {
+func (x *pingPongPingPongServer) Send(m *anypb.Any) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *pingPongPingPongServer) Recv() (*PP, error) {
-	m := new(PP)
+func (x *pingPongPingPongServer) Recv() (*anypb.Any, error) {
+	m := new(anypb.Any)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
