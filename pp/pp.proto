@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package pp;
+option go_package = ".;pp";
+
+// PP Service
+service PingPong {
+  // PP
+  rpc PingPong(stream PP) returns (stream PP) {};
+}
+
+// The request message
+message PP {
+  // Data
+  string data = 1;
+}
